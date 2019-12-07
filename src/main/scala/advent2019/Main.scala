@@ -14,6 +14,8 @@ object Main extends App {
   // Day2.b
   // Day3.a
   // Day3.b
+  // Day4.a
+  Day4.b
 }
 
 object Day1 {
@@ -267,5 +269,68 @@ object Day3 {
       .toList
       .sortBy(i => i._2) // should equal 410
     )
+  }
+}
+
+object Day4 {
+  val start = 367479
+  val end = 893698
+
+  def neverDecreases(a: Int) = {
+    a.toString
+      .sliding(2)
+      .map(x => x(1) - x(0))
+      .forall(_ >= 0)
+  }
+
+  def hasAdjacentNumbers(a: Int) = {
+    a.toString
+      .sliding(2)
+      .exists(x => x(0) == x(1))
+  }
+
+  def adjacentGroups(a: Int) = {
+    val s = a.toString
+    var i = 0
+    var groups = new ListBuffer[String]
+    var currentGroup = new ListBuffer[Char]
+    val end = (s.length - 1)
+    while (i < end) {
+      if (s(i) == s(i+1)) currentGroup.append(s(i))
+      else {
+        currentGroup.append(s(i))
+        groups.append(currentGroup.result.mkString)
+        currentGroup.clear()
+      }
+      i += 1
+    }
+    currentGroup.append(s(i))
+    groups.append(currentGroup.result.mkString)
+
+    groups
+  }
+
+  def onlyTwoAdjacentNumbers(a: Int) = {
+    val groups = adjacentGroups(a)
+    groups.exists(grp => grp.length == 2)
+  }
+
+  def a() {
+    var count = 0
+    for (i <- start to end) {
+      if (neverDecreases(i) && hasAdjacentNumbers(i)) count += 1
+    }
+    println(count)
+  }
+
+  def b() {
+    var count = 0
+    for (i <- start to end) {
+      if (neverDecreases(i) && onlyTwoAdjacentNumbers(i)) {
+        println(i)
+        count += 1
+      }
+    }
+    println(count)
   }
 }
